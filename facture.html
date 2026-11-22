@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Facture taxi Monaco</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root{--f-num:"Barlow Condensed","Arial Narrow",sans-serif;--f-body:"Barlow",system-ui,sans-serif}
+.t-dark{--bg:#131417;--card:#1C1D22;--fg:#F3F1EC;--muted:#A0A3AB;--line:#34363E;--gold:#F2CA12;--grad:linear-gradient(100deg,#A88600,#CDA908 30%,#ECC600 62%,#FAD200 85%,#FFE266);--on:#17140A;--vio:#C48BCB}
+.t-light{--bg:#EDEAE3;--card:#FFFFFF;--fg:#17181B;--muted:#6B6E76;--line:#E2DDD2;--gold:#8F7300;--grad:linear-gradient(100deg,#C6A206,#ECC600 55%,#FAD200);--on:#1A1608;--vio:#8E4B92}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);padding:20px 14px 30px;min-height:100vh}
+.inv{position:relative;max-width:460px;margin:0 auto;aspect-ratio:1080/1350;container-type:inline-size;border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.25);background:#f4ece6}
+.inv>img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.panel{position:absolute;left:6.5%;right:6.5%;top:17%;bottom:10%;background:rgba(255,255,255,.80);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border-radius:4cqw;padding:3cqw 5cqw 2.4cqw;display:flex;flex-direction:column;color:#17181B;box-shadow:0 2cqw 6cqw rgba(60,30,20,.12)}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:3cqw;padding-bottom:2cqw;border-bottom:.5cqw solid #E3C24A}
+.top .k{font-size:2.4cqw;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#8E4B92}
+.top .taxi{font-family:var(--f-num);font-weight:700;font-size:7.4cqw;line-height:.95;text-transform:uppercase;letter-spacing:.01em}
+.top .meta{text-align:right;font-size:2.9cqw;font-weight:600;color:#55585F;line-height:1.35}
+.top .meta b{display:block;font-family:var(--f-num);font-size:4.6cqw;color:#17181B}
+.trip{display:grid;grid-template-columns:3cqw 1fr;column-gap:3cqw;margin:1.8cqw 0 1.3cqw}
+.trip .dot{width:2.8cqw;height:2.8cqw;border-radius:50%;border:.75cqw solid #B89400;margin-top:1.2cqw;box-sizing:border-box}
+.trip .dot.end{background:#B89400}
+.trip .bar{width:.45cqw;background:#D9D3C6;margin:0 auto;height:1cqw}
+.trip .lb{font-size:2.2cqw;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7A7D85}
+.trip .pl{font-family:var(--f-num);font-size:4.6cqw;font-weight:600;line-height:1.08;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lines{border-top:.3cqw solid #E2DDD2}
+.ln{display:flex;justify-content:space-between;align-items:baseline;padding:.6cqw 0;border-bottom:.3cqw solid #E2DDD2;font-size:3.1cqw;align-items:center}
+.ln>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:2cqw;line-height:1.15}
+.en{display:block;font-size:2.2cqw;color:#8A8D95;font-style:italic;letter-spacing:.01em;font-family:var(--f-body)}
+.lb .en{display:inline;font-size:2cqw;letter-spacing:.05em;text-transform:none;font-weight:600;margin-left:1cqw}
+.ln>span:last-child{font-family:var(--f-num);font-size:3.9cqw;font-variant-numeric:tabular-nums}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin-top:auto;padding-top:1cqw}
+.total .l{font-size:2.5cqw;font-weight:800;letter-spacing:.18em;text-transform:uppercase;line-height:1.2}
+.total .l .en{display:block;font-size:2.1cqw;letter-spacing:.04em;text-transform:none;font-weight:600}
+.total .v{font-family:var(--f-num);font-weight:700;font-size:7.4cqw;line-height:1;color:#8F7300}
+.tva{display:flex;justify-content:space-between;align-items:center;font-size:2.6cqw;line-height:1.2;color:#6B6E76;padding-top:.8cqw}
+.dense .ln{padding:.25cqw 0}.dense .en{display:inline;margin-left:1.2cqw;font-size:2cqw}.dense .trip{margin:1.2cqw 0 .8cqw}.dense .total .v{font-size:6.6cqw}
+.thanks{text-align:center;font-size:2.6cqw;color:#8E4B92;font-weight:600;padding-top:1.3cqw;letter-spacing:.02em}
+.actions{max-width:440px;margin:16px auto 0;display:flex;flex-direction:column;gap:8px}
+.btn{border:0;border-radius:14px;padding:14px;font-family:var(--f-num);font-size:1.2rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(100deg,#C6A206,#ECC600 55%,#FAD200);color:#1A1608;cursor:pointer}
+.err{max-width:440px;margin:40px auto;text-align:center;color:var(--muted)}
+@media print{@page{margin:10mm}body{background:#fff!important;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.inv{box-shadow:none;max-width:130mm}.actions{display:none}}
+</style>
+</head>
+<body style="background:#EDEAE3">
+<div id="root"></div>
+<script>
+/* La facture arrive dans le lien (après #), encodée par Archiv. Rien n'est envoyé à un serveur. */
+function dec(s){try{s=s.replace(/-/g,"+").replace(/_/g,"/");const b=atob(s);const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return JSON.parse(new TextDecoder().decode(u));}catch(e){return null;}}
+function eur(v){return Number(v||0).toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2}).replace(/[  ]/g," ")+" €";}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+const q=new URLSearchParams(location.search);if(q.get("theme")==="dark")document.body.className="t-dark";
+const F=dec(location.hash.slice(1));const R=document.getElementById("root");
+if(!F){R.innerHTML='<div class="err">Facture introuvable. Scanne à nouveau le QR code du taxi.</div>';}
+else{
+  const d=new Date(F.d);const tva=F.tot-F.tot/1.1;
+  const EN=t=>/^d[ée]pose/i.test(t)?"Intermediate stop"+(t.match(/\(.*\)/)?" "+t.match(/\(.*\)/)[0]:""):/^aller/i.test(t)?"Return trip":/^attente/i.test(t)?"Waiting / traffic":/^prix de base/i.test(t)?"Base fare":"";
+  const lines=[["Prix de base",F.b]];if(F.w)lines.push(["Attente / trafic",F.w]);(F.i||[]).forEach(x=>lines.push([x[0]||"Dépose intermédiaire",x[1]]));
+  R.innerHTML='<div class="inv'+(lines.length>4?' dense':'')+'"><img class="bg" src="img/facture-fond.jpg" alt=""><div class="panel">'+
+    '<div class="top"><div><div class="k">Facture · Invoice</div><div class="taxi">Taxi N°'+esc(F.n)+'</div></div><div class="meta">N° / No. <b>'+esc(F.no)+'</b>'+d.toLocaleDateString("fr-FR")+' · '+String(d.getHours()).padStart(2,"0")+'h'+String(d.getMinutes()).padStart(2,"0")+'</div></div>'+
+    '<div class="trip"><span class="dot"></span><span><div class="lb">Départ<span class="en">Departure</span></div><div class="pl">'+esc(F.f)+'</div></span><span class="bar"></span><span></span>'+
+    '<span class="dot end"></span><span><div class="lb">Arrivée<span class="en">Arrival</span></div><div class="pl">'+esc(F.t)+'</div></span></div>'+
+    '<div class="lines">'+lines.map(l=>'<div class="ln"><span>'+esc(l[0])+'<span class="en">'+esc(EN(l[0]))+'</span></span><span>'+eur(l[1])+'</span></div>').join("")+'</div>'+
+    '<div class="total"><span class="l">Total TTC<span class="en">Total incl. VAT</span></span><span class="v">'+eur(F.tot)+'</span></div>'+
+    '<div class="tva"><span>dont TVA 10 % (transport de personnes)<span class="en">incl. 10% VAT (passenger transport)</span></span><span>'+eur(tva)+'</span></div>'+
+    '<div class="thanks">Merci pour votre confiance · Thank you for your trust</div></div></div>'+
+    '<div class="actions"><button class="btn" onclick="window.print()">Enregistrer en PDF / imprimer</button></div>';
+  document.title="Facture "+F.no+" · Taxi N°"+F.n+" Monaco";}
+</script>
+</body>
+</html>

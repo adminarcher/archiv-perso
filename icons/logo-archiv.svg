@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1294 1300"><defs><linearGradient id="ag" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9C7C00"/><stop offset=".3" stop-color="#C6A206"/><stop offset=".62" stop-color="#ECC600"/><stop offset=".85" stop-color="#FAD200"/><stop offset="1" stop-color="#FFE266"/></linearGradient><linearGradient id="tg" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="420" y2="0"><stop offset="0" stop-color="#8E4B92"/><stop offset="1" stop-color="#EAB65A"/></linearGradient></defs>
+<path fill="url(#ag)" fill-rule="evenodd" d="M578 0L870 662L1072 548L1080 492L1294 444L1160 610L1093 592L896 716L1155 1296L783 790L0 1300ZM578 505L406 922L740 735ZM1228 492L1098 570L1158 589Z"/>
+<text transform="translate(165 895) rotate(-66)" font-family="Barlow Condensed,Liberation Sans Narrow,Arial Narrow,sans-serif" font-weight="600" font-size="185" letter-spacing="40" fill="url(#tg)">ARCHIV</text>
+</svg>
