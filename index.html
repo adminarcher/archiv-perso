@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ARCHIV PERSO</title>
+<title>ARCHIV</title>
 <meta name="description" content="ARCHIV · statistiques, dépenses et bénéfice pour les taxis de Monaco. Données gardées sur le téléphone.">
 <meta name="theme-color" content="#131417">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Archiv Perso">
+<meta name="apple-mobile-web-app-title" content="Archiv">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
@@ -440,25 +440,7 @@ a.btn{text-decoration:none;text-align:center;display:inline-flex;align-items:cen
 .ride .acts{display:flex;align-items:center;gap:2px}
 .ride .ib{border:1px solid var(--gold-line);background:transparent;color:var(--gold);border-radius:8px;padding:5px 8px;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
 .ride .ib.done{background:var(--gold-bg)}
-.details{display:flex;flex-direction:column;gap:6px}
-.trow{display:grid;gap:6px}
-.trow.pax{grid-template-columns:1fr 1fr 1.25fr}
-.trow.c5{grid-template-columns:repeat(5,minmax(0,1fr))}
-.trow.c5 .tb .big{font-size:1.1rem;white-space:nowrap}
-.trow.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.tb{min-height:44px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:2px;min-width:0}
-.tb .big{font-family:var(--f-num);font-size:1.35rem;font-weight:700}
-.tb .sm{font-size:.6rem;font-weight:600;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.tb[aria-pressed="true"]{background:var(--violet-strong);border-color:var(--violet-strong);color:#fff}
-.tb[aria-pressed="true"] .sm{color:#F2E6F4}
-#addH .big{color:#7FB7FF}#addF .big{color:#FF9EC8}
-.paxbox{display:flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--deep);border-radius:12px;padding:0 4px 0 10px;min-width:0}
-.paxshow{flex:1;min-width:0;font-family:var(--f-num);font-size:1.15rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
-.paxshow b{color:var(--fg)}.paxshow .h{color:#7FB7FF}.paxshow .f{color:#FF9EC8}
-.paxdel{border:0;background:transparent;color:var(--muted);font-size:1.1rem;padding:6px}
-.persotag{flex:none;font-size:.6rem;font-weight:800;letter-spacing:.12em;padding:3px 6px;border-radius:6px;background:var(--violet-strong);color:#fff}
-@media (max-height:760px){.tb{min-height:38px}.tb .sm{display:none}.details{gap:5px}.trow{gap:5px}}
-
+/*PERSO_CSS*/
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -579,16 +561,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       </div>
     </div>
     <div class="chips" id="fareChips"></div>
-    <div id="details" class="details">
-      <div class="trow pax">
-        <button class="tb" id="addH" type="button" aria-label="Ajouter un homme"><span class="big">H</span><span class="sm">homme</span></button>
-        <button class="tb" id="addF" type="button" aria-label="Ajouter une femme"><span class="big">F</span><span class="sm">femme</span></button>
-        <div class="paxbox"><div class="paxshow" id="paxShow"></div><button class="paxdel" id="paxDel" type="button" aria-label="Retirer le dernier passager">⌫</button></div>
-      </div>
-      <div class="trow c5" id="ageSeg" aria-label="Âge du client principal"></div>
-      <div class="trow c3" id="typeSeg" aria-label="Type de clientèle"></div>
-    </div>
-
+<!--PERSO_DETAILS-->
     <div class="annpanel" id="annPanel" hidden><b>Course annulée</b><span>Comment le client avait-il commandé ?</span><div class="annsrc"><button type="button" id="annApp" aria-pressed="true"><span>Application</span><small id="annAppAmt"></small></button><button type="button" id="annTel" aria-pressed="false"><span>Téléphone</span><small>0 €</small></button></div><span id="annTx"></span></div>
     <button class="savebtn" id="saveBtn" type="button"><span class="sl">Enregistrer</span><span class="sr" id="saveR"></span></button>
   </div>
@@ -912,13 +885,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 <script>
 "use strict";
 /* ================= ARCHIV · noyau ================= */
-const PERSO=true; // remplacé par true pour la version perso
-const APPV="1.3.2";
+const PERSO=false; // remplacé par true pour la version perso
+const APPV="1.3.4";
 const CONTACT="Noaro.taxi@gmail.com";
-const APP_URL_DEFAULT=PERSO?"https://adminarcher.github.io/archiv-perso/":"https://adminarcher.github.io/archiv/";
-const APP_NAME=PERSO?"Archiv Perso":"Archiv";
-const AGES={1:"18–30",2:"31–40",3:"41–50",4:"51–60",5:"61+"};
-const TYPES={r:"Résident",t:"Touriste loisir",b:"Touriste business"};
+const APP_URL_DEFAULT="https://adminarcher.github.io/archiv/";
+const APP_NAME="Archiv";
+
 const $=id=>document.getElementById(id);
 const CA_TVA=10; // TVA contenue dans le CA des courses (transport de personnes)
 
@@ -941,7 +913,7 @@ const TAGS={trafic:"Gros trafic",accident:"Accident autoroute",greve:"Grève SNC
 const TAGICON={trafic:"🚗",accident:"⚠",greve:"🚆",autre:"✎"};
 
 /* ---------- stockage local ---------- */
-const P=PERSO?"archivp.":"archiv.";
+const P="archiv.";
 const LS={get(k,d){try{const v=localStorage.getItem(P+k);return v?JSON.parse(v):d}catch(e){return d}},
   set(k,v){try{localStorage.setItem(P+k,JSON.stringify(v));return true}catch(e){toast("Mémoire du téléphone pleine : fais une sauvegarde");return false}},
   del(k){try{localStorage.removeItem(P+k)}catch(e){}}};
@@ -964,7 +936,7 @@ function save(...keys){const all={profile,settings,days,shifts,tags,fixed,social
 function own(o){return o?JSON.parse(JSON.stringify(o)):o;}
 
 /* fichiers des factures : IndexedDB */
-const IDB={db:null,open(){return new Promise((res,rej)=>{if(this.db)return res(this.db);try{const q=indexedDB.open(PERSO?"archivp":"archiv",1);q.onupgradeneeded=()=>q.result.createObjectStore("files");q.onsuccess=()=>{this.db=q.result;res(this.db);};q.onerror=()=>rej(q.error);}catch(e){rej(e);}});},
+const IDB={db:null,open(){return new Promise((res,rej)=>{if(this.db)return res(this.db);try{const q=indexedDB.open("archiv",1);q.onupgradeneeded=()=>q.result.createObjectStore("files");q.onsuccess=()=>{this.db=q.result;res(this.db);};q.onerror=()=>rej(q.error);}catch(e){rej(e);}});},
   async op(mode,fn){const db=await this.open();return new Promise((res,rej)=>{const tx=db.transaction("files",mode);const st=tx.objectStore("files");const q=fn(st);tx.oncomplete=()=>res(q&&q.result);tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error);});},
   put(k,v){return this.op("readwrite",s=>s.put(v,k));},get(k){return this.op("readonly",s=>s.get(k));},del(k){return this.op("readwrite",s=>s.delete(k));},
   clear(){return this.op("readwrite",s=>s.clear());},keys(){return this.op("readonly",s=>s.getAllKeys());}};
@@ -1021,13 +993,12 @@ function destOrder(obj){const ord=gridOrder();const ks=Object.keys(obj||{});
 
 /* ---------- statistiques ---------- */
 function stats(rides){
-  const s={n:0,ann:0,annTel:0,ca:0,caAnn:0,van:0,caVan:0,zone:{},pax:0,h:0,f:0,age:{},type:{},size:{}};
+  const s={n:0,ann:0,annTel:0,ca:0,caAnn:0,van:0,caVan:0,zone:{}};
   for(const r of rides){
     if(r.x){s.ann++;if(r.src==="tel")s.annTel++;s.caAnn+=+r.a||0;continue;}
     s.n++;s.ca+=+r.a||0;if(r.v){s.van++;s.caVan+=+r.a||0;}
     const z=destOf(r);s.zone[z]=s.zone[z]||{n:0,ca:0};s.zone[z].n++;s.zone[z].ca+=+r.a||0;
-    if(PERSO){const c=r.c||"";s.pax+=c.length;for(const ch of c){if(ch==="h")s.h++;else if(ch==="f")s.f++;}
-      const add=(o,k)=>{o[k]=o[k]||{n:0,ca:0};o[k].n++;o[k].ca+=+r.a||0;};add(s.age,r.g?String(r.g):"?");add(s.type,r.y||"?");if(c.length)add(s.size,String(Math.min(c.length,5)));}}
+}
   s.total=s.ca+s.caAnn;s.avg=s.n?s.ca/s.n:0;return s;}
 function annSrc(r){return r.src==="tel"?"téléphone":"appli";}
 function lineOf(r){const a=String(r.a||0).replace(".",",");
@@ -1100,7 +1071,7 @@ function renderForm(){
   const b=formBase();
   const acl=active&&active.cl?(active.cln||"client"):"";
   $("zoneLbl").textContent=(acl&&b==null&&!form.x)?"Client : "+acl:form.x?"Course annulée":(form.dest||(b!=null?(destCandidates(b).main.join(" · ")||"Hors grille"):(form.v?"Tarif van · +"+(profile.vanPct||50)+" %":"")));
-  $("fareChips").hidden=form.x;$("annPanel").hidden=!form.x;if(PERSO)renderPersoForm();
+  $("fareChips").hidden=form.x;$("annPanel").hidden=!form.x;
   $("annApp").setAttribute("aria-pressed",String(form.xs!=="tel"));$("annTel").setAttribute("aria-pressed",String(form.xs==="tel"));$("annAppAmt").textContent=eur(settings.cancelAmt||10);
   $("annTx").textContent=form.xs==="tel"?"Commande par téléphone : rien n’est facturé, l’annulation est seulement comptée.":"Commande via l’application d’attribution : "+eur(form.a||0,true)+" facturés.";
   $("cancelled").setAttribute("aria-pressed",String(!!form.x));
@@ -1133,7 +1104,7 @@ function commitRide(){
   if(active&&active.rs&&!active.cl){const RR=resas.find(x=>x.id===active.rs);if(RR&&RR.kind==="recu"){r.rs=RR.id;r.ptk=ptKeyOf(RR);r.ptPay=RR.pay;
     r.cln=(RR.clientName||"Client")+" (via "+fromName(RR)+")";if(RR.pay==="collegue"&&!(r.x&&!(r.a>0)))r.npt=1;}}
   if(active&&active.cl){const c=cliById(active.cl);r.cl=active.cl;r.cln=c?cliName(c):(active.cln||"");if(c&&c.mode==="compte"&&!(r.x&&!(r.a>0)))r.np=1;if(active.rs)r.rs=active.rs;}
-  if(PERSO&&!form.x){if(form.c)r.c=form.c;if(form.g)r.g=form.g;if(form.y)r.y=form.y;}
+  
   if(!form.x){if(st)r.dur=Math.max(1,Math.round((now-st)/60000));if(form.v)r.v=1;if(form.dest)r.dest=form.dest;}
   days[k]=(days[k]||[]).concat([r]);save("days");
   if(r.rs){const R=resas.find(x=>x.id===r.rs);if(R){R.st=r.x?"annulee":"faite";R.ride={d:k,id:r.id};save("resas");}}
@@ -1315,7 +1286,7 @@ function renderRes(){
     '<div class="kpi"><span class="n">'+esc(eur(s.total/nDays))+'</span><span class="l">CA moyen par jour</span></div>'+
     '<div class="kpi"><span class="n">'+s.ann+'</span><span class="l">Annulées · '+esc(eur(s.caAnn))+(s.annTel?' · dont '+s.annTel+' par tél.':'')+'</span></div>'+
     '</div>'+vanCard(R,s)+
-    barsCard("Destinations",s.zone,k=>k==="?"?"Non renseigné":k,destOrder(s.zone),s.n)+(PERSO?persoCards(s):"")+
+    barsCard("Destinations",s.zone,k=>k==="?"?"Non renseigné":k,destOrder(s.zone),s.n)+
     extraCards(R,rides)+expCard(R,EX,false);}
 
 /* ================= onglet Analyse ================= */
@@ -1362,7 +1333,7 @@ function renderAna(){
   if(!rides.length){V.innerHTML='<div class="card"><div class="empty">Aucune course sur cette période. Les graphiques apparaîtront dès tes premières saisies.</div></div>'+splitCard(R,rides,workIn(R));return;}
   const s=stats(rides);const A=analyse(rides,R);const dks=Object.keys(A.byDay);const nDays=dks.length;
   const ins=[];
-  if(PERSO)persoInsights(s,ins);
+  
   ins.push([eur(s.total/nDays),"par jour travaillé en moyenne","soit "+(s.n/nDays).toFixed(1).replace(".",",")+" courses par jour sur "+plural(nDays,"jour")]);
   if(nDays>1){const best=dks.reduce((m,k)=>A.byDay[k].ca>A.byDay[m].ca?k:m,dks[0]);ins.push([eur(A.byDay[best].ca),"ton meilleur jour",WDL[wdOf(best)]+" "+fmtK(best)+" · "+plural(A.byDay[best].n,"course")]);}
   let bs=null;A.heat.forEach((row,w)=>row.forEach((c,i)=>{if(c.n&&(!bs||c.ca>bs.ca))bs={w,i,ca:c.ca,n:c.n};}));
@@ -1380,6 +1351,7 @@ function renderAna(){
       '<div class="note">'+plural(WA.length,"journée")+' · moyenne '+dur(S.tot/WA.length)+' par journée, dont '+dur(S.eff/WA.length)+' effectives</div></div>';}
   else h+='<div class="card quiet"><div class="label">Heures de travail</div><div class="note">Utilise Débuter la journée, Pause et Fin de journée pour suivre tes heures.</div></div>';
   h+=splitCard(R,rides,WA);
+  
   {const D=durStats(rides);
     h+='<div class="card"><div class="label">Temps moyen par course</div>';
     if(D.n)h+='<div><span class="big1">'+Math.round(D.min/D.n)+' min</span><div class="note">sur '+plural(D.n,"course")+' lancée'+(D.n>1?"s":"")+' avec Départ</div></div><div class="sub">Par destination</div>'+minBars(D.zone,destOrder(D.zone),k=>k);
@@ -1688,12 +1660,12 @@ function buildPdf(R,rides,extra){
   const head={fillColor:INK,textColor:255,fontStyle:"bold"};const base={theme:"striped",headStyles:head,styles:{fontSize:9,cellPadding:2},margin:{left:14,right:14}};
   const syn=[["Chiffre d'affaires TTC",eur(s.total,true)],["Courses réalisées",String(s.n)],["Panier moyen",eur(s.avg,true)],["Jours travaillés",String(nDays)],["Courses annulées",s.ann+" ("+eur(s.caAnn,true)+")"]];
   if(s.van||hasVan())syn.push(["Courses van",s.van+" ("+eur(s.caVan,true)+")"]);
-  if(PERSO)syn.push(["Passagers transportés",s.pax+" ("+s.h+" H / "+s.f+" F)"]);
+  
   doc.autoTable(Object.assign({},base,{startY:36,head:[["Synthèse",""]],body:syn.concat(extra||[]),columnStyles:{1:{halign:"right",fontStyle:"bold"}}}));
   const zk=destOrder(s.zone).filter(k=>s.zone[k]);
   if(zk.length)doc.autoTable(Object.assign({},base,{startY:doc.lastAutoTable.finalY+6,head:[["Destination","Courses","%","CA"]],
     body:zk.map(k=>[k==="?"?"Non renseigné":k,String(s.zone[k].n),(s.n?Math.round(s.zone[k].n/s.n*100):0)+" %",eur(s.zone[k].ca,true)]),columnStyles:{1:{halign:"right"},2:{halign:"right"},3:{halign:"right"}}}));
-  if(PERSO)persoPdfTables(doc,base,s);
+  
   const D=durStats(rides);
   if(D.n){const ord=destOrder(D.zone);
     doc.autoTable(Object.assign({},base,{startY:doc.lastAutoTable.finalY+6,head:[["Durée moyenne des courses ("+Math.round(D.min/D.n)+" min en moyenne)","Courses","Durée"]],
@@ -1703,8 +1675,8 @@ function buildPdf(R,rides,extra){
     body:SP.list.map(x=>[fmtK(x.d)+" · "+x.txt,eur(x.ca,true)]).concat(SP.nNormal?[["Moyenne des jours normaux ("+SP.nNormal+" j)",eur(SP.nAvg,true)]]:[]),columnStyles:{1:{halign:"right"}}}));
   if(rides.length){doc.addPage();
     doc.setTextColor(...INK);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text("Détail des courses",14,16);
-    doc.autoTable(Object.assign({},base,{startY:20,head:[["Date","Départ","Fin","Durée","Montant","Van","Destination"].concat(PERSO?["Clients"]:[])],
-      body:rides.map(r=>[fmtK(r.d),hh(r.t),hh(r.f),r.dur?r.dur+" min":"",eur(r.a,true),r.v?"van":"",(r.x?"Annulée ("+annSrc(r)+")":destOf(r))+(r.cln?" · "+r.cln+(r.np||r.npt?" (à encaisser)":""):"")].concat(PERSO?[persoTxt(r)]:[])),
+    doc.autoTable(Object.assign({},base,{startY:20,head:[["Date","Départ","Fin","Durée","Montant","Van","Destination"]],
+      body:rides.map(r=>[fmtK(r.d),hh(r.t),hh(r.f),r.dur?r.dur+" min":"",eur(r.a,true),r.v?"van":"",(r.x?"Annulée ("+annSrc(r)+")":destOf(r))+(r.cln?" · "+r.cln+(r.np||r.npt?" (à encaisser)":""):"")]),
       columnStyles:{3:{halign:"right"},4:{halign:"right"}},styles:{fontSize:8,cellPadding:1.6}}));}
   const WK=workIn(R);const EX=expIn(R);const PF=profitOf(R);
   if(EX.length||PF.costTTC){doc.addPage();doc.setTextColor(...INK);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text("Coûts et bénéfice",14,16);
@@ -1745,10 +1717,10 @@ function buildXlsx(R,rides,shiftList,type){
     if(S.eff>9e5)sum.push(["CA par heure effective (€)",+(s.total/(S.eff/36e5)).toFixed(2)]);
     const TS=timeSplit(R,rides,workIn(R));if(TS&&TS.stationKnown)sum.push(["dont en course (h)"+(TS.est?" · en partie estimé":""),+(TS.ride/60).toFixed(2)],["dont en station (h)",+(TS.station/60).toFixed(2)],["dont à vide : retours, approches (h)",+(TS.empty/60).toFixed(2)]);}
   const D=durStats(rides);if(D.n)sum.push([],["Durée moyenne d'une course (min)",Math.round(D.min/D.n)]);
-  if(PERSO)persoXlsxSum(sum,s);
+  
   sum.push([],["Destination","Courses","CA (€)"]);destOrder(s.zone).forEach(k=>{if(s.zone[k])sum.push([k,s.zone[k].n,r2(s.zone[k].ca)]);});
   const ws1=XLSX.utils.aoa_to_sheet(sum);ws1["!cols"]=[{wch:36},{wch:12},{wch:12}];XLSX.utils.book_append_sheet(wb,ws1,"Synthèse");
-  const rows=[["Date","Départ","Fin","Durée (min)","Montant (€)","Van","Annulée","Destination","Client","Paiement","Facture n°"].concat(PERSO?["Passagers","Hommes","Femmes","Âge","Type"]:[])].concat(rides.map(r=>[fmtK(r.d),hh(r.t),hh(r.f),r.dur||"",+r.a||0,r.v?"oui":"",r.x?annSrc(r):"",r.x?"":destOf(r),r.cln||"",r.cl?(r.np?"à encaisser":r.pp?"payée le "+fmtK(r.pp):"payée"):r.ptk?(r.ptPay==="collegue"?(r.npt?"à encaisser (collègue)":"payée par le collègue"):"client direct"):"",r.inv?r.inv.no:""].concat(PERSO?persoCols(r):[])));
+  const rows=[["Date","Départ","Fin","Durée (min)","Montant (€)","Van","Annulée","Destination","Client","Paiement","Facture n°"]].concat(rides.map(r=>[fmtK(r.d),hh(r.t),hh(r.f),r.dur||"",+r.a||0,r.v?"oui":"",r.x?annSrc(r):"",r.x?"":destOf(r),r.cln||"",r.cl?(r.np?"à encaisser":r.pp?"payée le "+fmtK(r.pp):"payée"):r.ptk?(r.ptPay==="collegue"?(r.npt?"à encaisser (collègue)":"payée par le collègue"):"client direct"):"",r.inv?r.inv.no:""]));
   const ws2=XLSX.utils.aoa_to_sheet(rows);ws2["!cols"]=[{wch:11},{wch:7},{wch:7},{wch:10},{wch:11},{wch:6},{wch:8},{wch:28},{wch:22},{wch:18},{wch:11}];XLSX.utils.book_append_sheet(wb,ws2,"Courses");
   if(W.length){const wr=[["Date","Début","Fin","Total (h)","Pauses (h)","Effectif (h)","Nb pauses"]].concat(W.map(w=>[fmtK(w.d),hh(hm(new Date(w.sh.s))),w.sh.e?hh(hm(new Date(w.sh.e))):"en cours",+(w.tot/36e5).toFixed(2),+(w.pz/36e5).toFixed(2),+(w.eff/36e5).toFixed(2),(w.sh.p||[]).length]));
     const ws3=XLSX.utils.aoa_to_sheet(wr);ws3["!cols"]=[{wch:11},{wch:7},{wch:9},{wch:10},{wch:10},{wch:11},{wch:9}];XLSX.utils.book_append_sheet(wb,ws3,"Temps de travail");}
@@ -2278,46 +2250,6 @@ function showInvQr(d,id){const r=rideOf(d,id);if(!r||!r.inv)return;iqUrl=invUrl(
   $("iqEdit").onclick=()=>{$("invQr").hidden=true;openInvoice(d,id);};$("invQr").hidden=false;}
 $("iqCopy").onclick=()=>copyText(iqUrl,"Lien de la facture copié");
 $("iqShare").onclick=async()=>{if(navigator.share){try{await navigator.share({title:"Facture taxi",text:"Votre facture / Your invoice :",url:iqUrl});}catch(e){}}else copyText(iqUrl,"Lien de la facture copié");};
-
-/* ================= ARCHIV PERSO : passagers, âge, type de clientèle ================= */
-(function(){
-  const seg=(box,items,key)=>{box.innerHTML="";items.forEach(([v,big,sm])=>{const b=document.createElement("button");b.type="button";b.className="tb";b.dataset.v=v;
-    b.innerHTML='<span class="big"></span><span class="sm"></span>';b.firstChild.textContent=big;b.lastChild.textContent=sm;b.setAttribute("aria-label",sm);
-    b.onclick=()=>{form[key]=String(form[key])===v?null:v;renderForm();};box.appendChild(b);});};
-  seg($("ageSeg"),Object.entries(AGES).map(([k,v])=>[k,v,"ans"]),"g");
-  seg($("typeSeg"),[["r","R","Résident"],["t","T","Touriste loisir"],["b","B","Touriste business"]],"y");
-  $("addH").onclick=()=>{if(form.c.length<8){form.c+="h";renderForm();}};
-  $("addF").onclick=()=>{if(form.c.length<8){form.c+="f";renderForm();}};
-  $("paxDel").onclick=()=>{form.c=form.c.slice(0,-1);renderForm();};
-  const tag=document.createElement("span");tag.className="persotag";tag.textContent="PERSO";const tb=$("topbar");tb.insertBefore(tag,tb.querySelector(".gear"));
-})();
-function renderPersoForm(){
-  $("details").hidden=!!form.x;
-  const c=form.c||"";const h=(c.match(/h/g)||[]).length,f=(c.match(/f/g)||[]).length;
-  $("paxShow").innerHTML=c.length?'<b>'+c.length+'</b> <span class="h">'+h+'H</span> <span class="f">'+f+'F</span>':'passagers';
-  document.querySelectorAll("#ageSeg .tb").forEach(b=>b.setAttribute("aria-pressed",String(String(form.g)===b.dataset.v)));
-  document.querySelectorAll("#typeSeg .tb").forEach(b=>b.setAttribute("aria-pressed",String(form.y===b.dataset.v)));}
-function persoTxt(r){if(r.x)return "";const c=r.c||"";const h=(c.match(/h/g)||[]).length,f=(c.match(/f/g)||[]).length;
-  return [c.length?c.length+" ("+h+"H/"+f+"F)":"",r.g&&AGES[r.g]?AGES[r.g]:"",r.y&&TYPES[r.y]?TYPES[r.y]:""].filter(Boolean).join(" · ");}
-function persoCols(r){if(r.x)return ["","","","",""];const c=r.c||"";return [c.length||"",(c.match(/h/g)||[]).length||"",(c.match(/f/g)||[]).length||"",r.g&&AGES[r.g]?AGES[r.g]:"",r.y&&TYPES[r.y]?TYPES[r.y]:""];}
-const AGE_ORDER=["1","2","3","4","5","?"],TYPE_ORDER=["r","t","b","?"],SIZE_ORDER=["1","2","3","4","5"];
-const ageLbl=k=>AGES[k]?AGES[k]+" ans":"Non renseigné",typeLbl=k=>TYPES[k]||"Non renseigné",sizeLbl=k=>k==="5"?"5 passagers et +":plural(+k,"passager");
-function persoCards(s){if(!s.n)return "";
-  return '<div class="kpis"><div class="kpi vn"><span class="n">'+s.pax+'</span><span class="l">Passagers transportés</span></div>'+
-    '<div class="kpi"><span class="n"><span style="color:#7FB7FF">'+s.h+' H</span> · <span style="color:#FF9EC8">'+s.f+' F</span></span><span class="l">'+(s.pax?Math.round(s.h/s.pax*100)+' % hommes · '+Math.round(s.f/s.pax*100)+' % femmes':'Hommes / femmes')+'</span></div></div>'+
-    barsCard("Type de clientèle",s.type,typeLbl,TYPE_ORDER,s.n)+
-    barsCard("Âge du client principal",s.age,ageLbl,AGE_ORDER,s.n)+
-    barsCard("Taille du groupe",s.size,sizeLbl,SIZE_ORDER,Object.values(s.size).reduce((t,x)=>t+x.n,0));}
-function persoInsights(s,ins){if(!s.n)return;const tour=((s.type.t||{n:0}).n+(s.type.b||{n:0}).n);const known=s.n-((s.type["?"]||{n:0}).n);
-  if(known)ins.push([Math.round(tour/known*100)+" %","de clientèle touristique","loisir et business confondus · sur "+plural(known,"course")+" renseignée"+(known>1?"s":"")]);
-}
-function persoPdfTables(doc,base,s){
-  const tbl=(title,obj,order,lab)=>{const ks=order.filter(k=>obj[k]);if(!ks.length)return;const tot=ks.reduce((t,k)=>t+obj[k].n,0);
-    doc.autoTable(Object.assign({},base,{startY:doc.lastAutoTable.finalY+6,head:[[title,"Courses","%","CA"]],body:ks.map(k=>[lab(k),String(obj[k].n),Math.round(obj[k].n/tot*100)+" %",eur(obj[k].ca,true)]),columnStyles:{1:{halign:"right"},2:{halign:"right"},3:{halign:"right"}}}));};
-  tbl("Type de clientèle",s.type,TYPE_ORDER,typeLbl);tbl("Âge du client principal",s.age,AGE_ORDER,ageLbl);tbl("Taille du groupe",s.size,SIZE_ORDER,sizeLbl);}
-function persoXlsxSum(sum,s){sum.push([],["Passagers transportés",s.pax],["Hommes",s.h],["Femmes",s.f]);
-  const add=(title,obj,order,lab)=>{const ks=order.filter(k=>obj[k]);if(!ks.length)return;sum.push([],[title,"Courses","CA (€)"]);ks.forEach(k=>sum.push([lab(k),obj[k].n,r2(obj[k].ca)]));};
-  add("Type de clientèle",s.type,TYPE_ORDER,typeLbl);add("Âge du client principal",s.age,AGE_ORDER,ageLbl);add("Taille du groupe",s.size,SIZE_ORDER,sizeLbl);}
 
 /* ================= thème, installation ================= */
 function applyTheme(){const t=settings.theme==="light"?"light":"dark";document.documentElement.setAttribute("data-theme",t);
