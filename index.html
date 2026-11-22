@@ -440,15 +440,15 @@ a.btn{text-decoration:none;text-align:center;display:inline-flex;align-items:cen
 .ride .acts{display:flex;align-items:center;gap:2px}
 .ride .ib{border:1px solid var(--gold-line);background:transparent;color:var(--gold);border-radius:8px;padding:5px 8px;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
 .ride .ib.done{background:var(--gold-bg)}
-.details{display:flex;flex-direction:column;gap:6px}
+.details{display:flex;flex-direction:column;gap:7px}
 .trow{display:grid;gap:6px}
 .trow.pax{grid-template-columns:1fr 1fr 1.25fr}
 .trow.c5{grid-template-columns:repeat(5,minmax(0,1fr))}
-.trow.c5 .tb .big{font-size:1.1rem;white-space:nowrap}
+.trow.c5 .tb .big{font-size:1.6rem;white-space:nowrap}
 .trow.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.tb{min-height:44px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:2px;min-width:0}
-.tb .big{font-family:var(--f-num);font-size:1.35rem;font-weight:700}
-.tb .sm{font-size:.6rem;font-weight:600;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tb{min-height:68px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:2px;min-width:0}
+.tb .big{font-family:var(--f-num);font-size:1.7rem;font-weight:700}
+.tb .sm{font-size:.68rem;font-weight:600;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .tb[aria-pressed="true"]{background:var(--violet-strong);border-color:var(--violet-strong);color:#fff}
 .tb[aria-pressed="true"] .sm{color:#F2E6F4}
 #addH .big{color:#7FB7FF}#addF .big{color:#FF9EC8}
@@ -457,7 +457,12 @@ a.btn{text-decoration:none;text-align:center;display:inline-flex;align-items:cen
 .paxshow b{color:var(--fg)}.paxshow .h{color:#7FB7FF}.paxshow .f{color:#FF9EC8}
 .paxdel{border:0;background:transparent;color:var(--muted);font-size:1.1rem;padding:6px}
 .persotag{flex:none;font-size:.6rem;font-weight:800;letter-spacing:.12em;padding:3px 6px;border-radius:6px;background:var(--violet-strong);color:#fff}
-@media (max-height:760px){.tb{min-height:38px}.tb .sm{display:none}.details{gap:5px}.trow{gap:5px}}
+@media (max-height:760px){.tb{min-height:46px}.tb .big,.trow.c5 .tb .big{font-size:1.35rem}.tb .sm{display:none}.details{gap:5px}.trow{gap:5px}}
+
+/* perso : prix un peu plus compacts pour laisser la place aux boutons clients */
+.chips{grid-auto-rows:minmax(46px,1fr)}.chip{font-size:1.5rem}
+@media (max-height:760px){.chips{grid-auto-rows:minmax(40px,1fr)}}
+@media (min-height:880px){.tb{min-height:84px}.tb .big,.trow.c5 .tb .big{font-size:1.9rem}.tb .sm{font-size:.75rem}}
 
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
