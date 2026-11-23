@@ -918,7 +918,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 "use strict";
 /* ================= ARCHIV · noyau ================= */
 const PERSO=true; // remplacé par true pour la version perso
-const APPV="1.3.6";
+const APPV="1.3.7";
 const CONTACT="Noaro.taxi@gmail.com";
 const APP_URL_DEFAULT=PERSO?"https://adminarcher.github.io/archiv-perso/":"https://adminarcher.github.io/archiv/";
 const APP_NAME=PERSO?"Archiv Perso":"Archiv";
@@ -1865,7 +1865,8 @@ makeSharer("end","esShare","esMail",{prep:"Préparer l’email du soir",go:F=>"E
     done:(F,r)=>{const sh=shifts[endKey];if(sh){sh.mail=Date.now();save("shifts");}return doneTxt(r);}},
   async()=>{const sh=shifts[endKey];const rides=ridesBetween(sh.s,sh.e||Date.now());const s=stats(rides);const R=shiftRange(sh);
     const P=await periodFiles(R,rides,[sh],shiftExtra(sh,s),{data:true});
-    return {files:P.files,inv:P.inv,miss:P.miss,meta:{title:"Archiv · Journée du "+fmtD(new Date(sh.s)),text:mailText(R,rides)+(profile&&profile.email?"\n\nÀ envoyer à : "+profile.email:"")}};});
+    return {files:P.files,inv:P.inv,miss:P.miss,meta:{title:mailSubject(sh),text:mailText(R,rides)+(profile&&profile.email?"\n\nÀ envoyer à : "+profile.email:"")}};});
+function mailSubject(sh){return (PERSO&&profile&&profile.lic?"Taxi N°"+profile.lic+" · Statistiques":APP_NAME+" · Statistiques")+" · Journée du "+fmtD(new Date(sh.s))+(!PERSO&&profile&&profile.lic?" · Licence "+profile.lic:"");}
 function openEnd(k){
   endKey=k;const sh=shifts[k];const rides=ridesBetween(sh.s,sh.e||Date.now());const s=stats(rides);const T=shiftTimes(sh,Date.now());const h=T.eff/36e5;
   const inRide=rides.reduce((t,r)=>t+(r.dur||0),0);
@@ -1886,6 +1887,7 @@ function openEnd(k){
   $("esHow").textContent=isAndroid?"Dans le menu Partager, choisis Gmail ou ton application mail. Sur Android, le fichier Excel part au format CSV (s’ouvre dans Excel).":"Dans le menu Partager, choisis Mail, colle l’adresse dans « À » puis envoie.";
   if(sh.mail)setMail("esMail","ok","Email du soir déjà préparé le "+fmtD(new Date(sh.mail))+" à "+hh(hm(new Date(sh.mail)))+". Tu peux le renvoyer.");
   resetSharer("end");$("endSheet").hidden=false;
+  if(PERSO&&amOn()){$("esBody").insertAdjacentHTML("beforeend",'<div class="mailst" id="esAuto"></div>');amSend(k,false);return;}
   setTimeout(()=>prepareSharer("end"),50);}
 
 /* ================= sauvegarde complète / restauration ================= */
@@ -2360,6 +2362,45 @@ function persoPdfLines(doc,base,R,rides){const multi=R.from!==R.to;doc.addPage()
 function persoXlsxLines(wb,R,rides){const rows=[["Date","Ligne","Montant (€)","H/F","Âge","Type","Heure","Destination","Passagers","Hommes","Femmes"]].concat(rides.map(r=>{const c=r.c||"";
     return [fmtK(r.d),lineOf(r),+r.a||0,r.x?"annulée":c,r.g?+r.g:"",r.y||"",hh(r.t),r.x?"":destOf(r),c.length||"",(c.match(/h/g)||[]).length||"",(c.match(/f/g)||[]).length||""];}));
   const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=[{wch:11},{wch:42},{wch:11},{wch:8},{wch:6},{wch:6},{wch:7},{wch:26},{wch:10},{wch:8},{wch:8}];XLSX.utils.book_append_sheet(wb,ws,"Lignes");}
+/* ---------- envoi automatique de l'email du soir (script Google sur le compte d'Archer) ---------- */
+const amCfg=()=>settings.am&&settings.am.u&&settings.am.k?settings.am:null;
+const amOn=()=>!!(amCfg()&&profile&&profile.email);
+function amSection(){const c=amCfg();
+  return '<section class="card"><div class="label">Envoi automatique de l’email du soir</div>'+
+    (c?'<div class="note">✓ Activé : à la « Fin de journée », l’email part tout seul vers <b class="gold">'+esc(profile.email||"(ajoute le destinataire ci-dessus)")+'</b>, avec l’objet « Taxi N°'+esc(profile.lic||"")+' · Statistiques · Journée du … ».</div>'+
+       '<div class="row3"><button class="btn sec sm" id="amTest" type="button">Envoyer un test</button><button class="btn dng sm" id="amOff" type="button">Désactiver</button></div><div class="mailst" id="amSt" hidden></div>'
+     :'<div class="note">Colle ici le code d’envoi automatique (il commence par AM1:).</div><div class="emrow"><input class="tagin" id="amCode" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="AM1:…"><button class="btn sec sm" id="amSave" type="button">OK</button></div>')+'</section>';}
+function amWire(){const s=$("amSave");if(s)s.onclick=()=>{const v=$("amCode").value.trim();
+    try{if(!/^AM1:/.test(v))throw 0;const o=JSON.parse(decodeURIComponent(escape(atob(v.slice(4)))));if(!/^https:\/\/script\.google\.com\//.test(o.u)||!o.k)throw 0;settings.am={u:o.u,k:o.k};save("settings");toast("Envoi automatique activé");renderSet();}
+    catch(e){toast("Code invalide : recopie-le en entier");}};
+  const t=$("amTest");if(t)t.onclick=async()=>{const st=$("amSt");setMailEl(st,"","Envoi du test…");
+    const r=await amPost({to:profile.email,subject:"Archiv Perso · test d’envoi automatique",body:"Si tu lis ceci, l’envoi automatique de l’email du soir fonctionne.",files:[]});
+    setMailEl(st,r.ok?"ok":"err",r.ok?"Test envoyé à "+profile.email+". Regarde ta boîte mail.":"Échec : "+r.err);};
+  const o=$("amOff");if(o)o.onclick=()=>{delete settings.am;save("settings");toast("Envoi automatique désactivé");renderSet();};}
+function setMailEl(el,kind,txt){if(!el)return;el.hidden=!txt;el.className="mailst"+(kind?" "+kind:"");el.innerHTML='<span class="ic">'+(kind==="ok"?"✓":kind==="err"?"!":"…")+'</span><span></span>';el.lastChild.textContent=txt;}
+async function amPost(payload){const c=amCfg();if(!c)return {ok:false,err:"non configuré"};
+  if(!navigator.onLine)return {ok:false,err:"pas de réseau"};
+  try{const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),90000);
+    const r=await fetch(c.u,{method:"POST",body:JSON.stringify(Object.assign({k:c.k,from:"Archiv Perso"},payload)),signal:ctl.signal});clearTimeout(to);
+    const j=await r.json().catch(()=>null);return j&&j.ok?{ok:true}:{ok:false,err:(j&&j.err)||("réponse "+r.status)};}
+  catch(e){return {ok:false,err:e&&e.name==="AbortError"?"délai dépassé":"réseau indisponible"};}}
+let amBusy=false;
+async function amSend(k,silent){const sh=shifts[k];if(!sh||!sh.e||amBusy)return;amBusy=true;const st=()=>silent?null:$("esAuto");
+  setMailEl(st(),"","Envoi automatique de l’email en cours…");
+  try{const rides=ridesBetween(sh.s,sh.e);const s=stats(rides);const R=shiftRange(sh);
+    const P=await periodFiles(R,rides,[sh],shiftExtra(sh,s),{data:true});
+    let files=[];for(const f of P.files)files.push({name:f.name,type:f.type,b64:await blobB64(f.blob)});
+    let body=mailText(R,rides);const size=files.reduce((t,f)=>t+f.b64.length*.75,0);
+    if(size>18e6){const keep=files.filter(f=>/\.(pdf|xlsx|csv|json)$/.test(f.name));if(keep.length<files.length){files=keep;body+="\n\n(Photos de factures trop lourdes pour l’email : elles restent dans l’appli.)";}}
+    const r=await amPost({to:profile.email,subject:mailSubject(sh),body,files});
+    if(r.ok){sh.mail=Date.now();delete sh.amPend;save("shifts");setMailEl(st(),"ok","Email envoyé automatiquement à "+profile.email+" ("+files.length+" pièce"+(files.length>1?"s":"")+" jointe"+(files.length>1?"s":"")+").");if(silent)toast("Email du "+fmtD(new Date(sh.s))+" envoyé");}
+    else{sh.amPend=1;save("shifts");setMailEl(st(),"err","Pas envoyé ("+r.err+"). Nouvel essai automatique dès que possible. Tu peux aussi utiliser le bouton ci-dessous.");if(!silent)setTimeout(()=>prepareSharer("end"),50);}}
+  catch(e){console.error(e);sh.amPend=1;save("shifts");setMailEl(st(),"err","Pas envoyé. Nouvel essai automatique dès que possible.");if(!silent)setTimeout(()=>prepareSharer("end"),50);}
+  finally{amBusy=false;}}
+function amRetry(){if(!amOn()||!navigator.onLine)return;const k=Object.keys(shifts).find(x=>shifts[x]&&shifts[x].amPend&&shifts[x].e);if(k)amSend(k,true);}
+window.addEventListener("online",()=>setTimeout(amRetry,3000));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(amRetry,4000);});
+setTimeout(amRetry,6000);
 
 /* ================= thème, installation ================= */
 function applyTheme(){const t=settings.theme==="light"?"light":"dark";document.documentElement.setAttribute("data-theme",t);
@@ -2457,7 +2498,8 @@ function renderSet(){
   h+='<section class="card"><div class="label">Installer & partager Archiv</div><div class="note">QR code et mini-guide d’installation iPhone / Android pour tes collègues.</div><button class="btn pri sm" id="stInstall" type="button">QR code & guide</button></section>';
   h+='<section class="card quiet"><div class="label">Données</div><div class="note">Tout est enregistré uniquement sur ce téléphone. « Tout effacer » supprime courses, journées, dépenses, factures, charges et réglages. Fais une sauvegarde avant.</div><button class="btn dng" id="stWipe" type="button">Tout effacer</button></section>';
   h+='<section class="card quiet"><div class="label">À propos</div><div class="mini"><div class="r"><span>Archiv</span><span>version '+APPV+'</span></div><div class="r"><span>Contact</span><span>'+esc(CONTACT)+'</span></div><div class="r"><span>Données</span><span>sur ce téléphone uniquement</span></div></div></section>';
-  V.innerHTML=h;wireSet();}
+  if(PERSO)h=h.replace('<section class="card vi"><div class="label">Van',amSection()+'<section class="card vi"><div class="label">Van');
+  V.innerHTML=h;wireSet();if(PERSO)amWire();}
 function wireSet(){
   $("stProfSave").onclick=()=>{const em=$("stEmail").value.trim();if(em&&!validEmail(em)){toast("Adresse email invalide");return;}
     if(!$("stName").value.trim()||!$("stLic").value.trim()){toast("Nom et n° de licence obligatoires");return;}

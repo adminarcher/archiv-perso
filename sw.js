@@ -1,5 +1,5 @@
 /* ARCHIV · service worker : l'appli fonctionne sans réseau après la première ouverture. */
-const PFX="archivp-v";const V=PFX+"1.3.6";
+const PFX="archivp-v";const V=PFX+"1.3.7";
 const SHELL=["./","index.html","manifest.webmanifest","icons/icon-180.png","icons/icon-192.png","icons/icon-512.png","icons/favicon-32.png"];
 const CDN=["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js","https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js","https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"];
